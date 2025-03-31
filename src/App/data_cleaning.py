@@ -19,17 +19,20 @@ def clean_fake_news_data():
     # Concatenate both datasets and select the relevant columns (title, text, subject, and label)
     df = pd.concat([fake_df[['title', 'text', 'subject', 'label']], true_df[['title', 'text', 'subject', 'label']]], ignore_index=True)
 
-    # Drop irrelevant columns
-    df = df[['title', 'text', 'subject', 'label']]
-
     # Handle missing values (drop rows where title or text is missing)
     df.dropna(subset=['title', 'text'], inplace=True)
 
-    # Rename columns for clarity
-    df.rename(columns={'title': 'Title', 'text': 'Text', 'subject': 'Subject', 'label': 'Label'}, inplace=True)
+    # Concatenate the title and text into a new column called 'text_combined'
+    df['text_combined'] = df['title'] + " " + df['text']
 
-    # Apply the cleaning function to the 'Text' column
-    df['Text'] = df['Text'].apply(clean_text)
+    # Apply the cleaning function to the 'text_combined' column
+    df['text_combined'] = df['text_combined'].apply(clean_text)
+
+    # Drop irrelevant columns
+    df = df[['text_combined', 'label']]  # Keep only the 'text_combined' and 'label' columns
+
+    # Rename columns for clarity
+    df.rename(columns={'text_combined': 'text'}, inplace=True)
 
     # Return cleaned DataFrame
     return df
@@ -58,6 +61,9 @@ def clean_liar_data():
     # Clean the 'statement' column
     liar_df['statement'] = liar_df['statement'].apply(clean_text)
 
+    # Rename 'statement' to 'text' for consistency
+    liar_df.rename(columns={'statement': 'text'}, inplace=True)
+
     # Return cleaned DataFrame
     return liar_df
 
@@ -71,25 +77,19 @@ def combine_datasets(fake_news_df, liar_df):
     liar_df['source'] = 'political_statement'
     
     # Select relevant columns and standardize labels in both datasets
-    fake_news_df = fake_news_df[['title', 'text', 'label', 'source']]
+    fake_news_df = fake_news_df[['text', 'label', 'source']]
     
     # Standardize the 'label' column in the Liar dataset to match the fake_news_df labels (True/False)
     liar_df['label'] = liar_df['label'].map({1: 'True', 0: 'False', 0.5: 'Half-True', -1: 'False'})
-    
-    # Rename 'statement' column to 'text' for consistency
-    liar_df.rename(columns={'statement': 'text'}, inplace=True)
     
     # Select relevant columns from liar_df
     liar_df = liar_df[['text', 'label', 'source']]
     
     # Combine the datasets
-    combined_df = pd.concat([fake_news_df[['title', 'text', 'label', 'source']], 
+    combined_df = pd.concat([fake_news_df[['text', 'label', 'source']], 
                              liar_df[['text', 'label', 'source']]], 
                             ignore_index=True)
     
-    # Rename 'title' column in fake_news_df to 'text' for consistency
-    combined_df.rename(columns={'title': 'text'}, inplace=True)
-
     # Reset index after combining
     combined_df.reset_index(drop=True, inplace=True)
     
@@ -97,8 +97,3 @@ def combine_datasets(fake_news_df, liar_df):
 
 def clean_data():
     return combine_datasets(clean_fake_news_data(), clean_liar_data())
-
-# Example usage
-#combined_df = clean_data()
-#print(combined_df.head())
-#print(combined_df.info())
