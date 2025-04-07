@@ -50,14 +50,26 @@ def clean_liar_data():
     # Handle missing values (drop rows where 'statement' or 'label' is missing)
     liar_df.dropna(subset=['statement', 'label'], inplace=True)
 
-    # Standardize the 'label' column (optional: convert to numeric labels)
+    # Suppress downcasting and chained assignment warnings
+    pd.set_option('future.no_silent_downcasting', True)
+    pd.options.mode.chained_assignment = None  # Disable chained assignment warning
+
+    print(liar_df['label'].dtype)
+    liar_df['label'] = liar_df['label'].apply(str)
+    print(liar_df['label'].dtype)
     liar_df['label'] = liar_df['label'].replace({
         'TRUE': 1,
         'FALSE': 0,
-        'half-true': 0.5,
-        'pants-fire': -1
+        'mostly-true': 1,
+        'half-true': 1,
+        'barely-true': 1,
+        'pants-fire': 0
     })
-
+    print(liar_df['label'].dtype)
+    liar_df['label'] = pd.to_numeric(liar_df['label'], errors='coerce')
+    print(liar_df['label'].dtype)
+    liar_df['label'] = liar_df['label'].fillna(0)  # or another appropriate value
+    
     # Clean the 'statement' column
     liar_df['statement'] = liar_df['statement'].apply(clean_text)
 
