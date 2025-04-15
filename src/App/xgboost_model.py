@@ -22,16 +22,16 @@ X_test_vec = vectorizer.transform(X_test)
 X_train_dense = X_train_vec.toarray()
 X_test_dense = X_test_vec.toarray()
 
-model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
-model.fit(X_train_dense, y_train)
+xgb_model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
+xgb_model.fit(X_train_dense, y_train)
 
-y_pred = model.predict(X_test_dense)
+y_pred = xgb_model.predict(X_test_dense)
 
 print("Accuracy: ", accuracy_score(y_test, y_pred))
 print("F1 Score: ", f1_score(y_test, y_pred))
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
 with open("fake_news_model.pkl", "wb") as f:
-    pickle.dump((vectorizer, model), f)
+    pickle.dump((vectorizer, xgb_model), f)
 
 print("Model and vectorizer saved.")
