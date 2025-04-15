@@ -33,6 +33,7 @@ if news_title:
             time.sleep(0.005)
 
         models = load_models()
+        print(type(models))  # Check if it's a dict or tuple
 
         st.subheader("🧠 Predictions by Model:")
 
