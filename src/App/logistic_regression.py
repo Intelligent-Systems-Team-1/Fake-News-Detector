@@ -19,15 +19,15 @@ vectorizer = TfidfVectorizer(stop_words="english", max_features=5000)
 X_train_vec = vectorizer.fit_transform(X_train)
 X_test_vec = vectorizer.transform(X_test)
 
-model = LogisticRegression()
-model.fit(X_train_vec, y_train)
+logistic_model = LogisticRegression()
+logistic_model.fit(X_train_vec, y_train)
 
-y_pred = model.predict(X_test_vec)
+y_pred = logistic_model.predict(X_test_vec)
 print("Accuracy: ", accuracy_score(y_test, y_pred))
 print("F1 Score: ", f1_score(y_test, y_pred))
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
 with open("fake_news_model.pkl", "wb") as f:
-    pickle.dump((vectorizer, model), f)
+    pickle.dump((vectorizer, logistic_model), f)
 
 print("Model and vectorizer saved.")
