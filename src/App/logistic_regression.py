@@ -27,7 +27,7 @@ print("Accuracy: ", accuracy_score(y_test, y_pred))
 print("F1 Score: ", f1_score(y_test, y_pred))
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
-with open("fake_news_model.pkl", "wb") as f:
+with open("logistic_model.pkl", "wb") as f:
     pickle.dump((vectorizer, logistic_model), f)
 
 print("Model and vectorizer saved.")
