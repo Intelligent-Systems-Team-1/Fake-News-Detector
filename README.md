@@ -1,5 +1,5 @@
 # Fake-News-Detector
-
+Test
 A machine learning project that detects fake news using NLP techniques. 
 
 Install dependencies:
