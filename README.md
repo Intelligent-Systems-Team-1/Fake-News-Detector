@@ -41,7 +41,7 @@ Fake news is a widespread issue affecting public opinion, especially in areas li
 
 1. Clone the repo  
    ```bash
-   git clone https://github.com/your-username/fake-news-detector.git
+   git clone https://github.com/Intelligent-Systems-Team-1/Fake-News-Detector
    cd fake-news-detector
    ```
 
